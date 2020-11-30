@@ -1,0 +1,31 @@
+{
+  "name": "frixbot-2",
+  "version": "0.0.1",
+  "description": "A revival of my Discord.js bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sulfrix/Frixbot-2.git"
+  },
+  "keywords": [
+    "discordjs",
+    "discord",
+    "discord.js"
+  ],
+  "author": "Sulfrix",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sulfrix/Frixbot-2/issues"
+  },
+  "homepage": "https://github.com/Sulfrix/Frixbot-2#readme",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.3",
+    "bufferutil": "^4.0.2",
+    "discord.js": "^12.5.1",
+    "erlpack": "github:discord/erlpack",
+    "utf-8-validate": "^5.0.3"
+  }
+}
