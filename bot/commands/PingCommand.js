@@ -17,8 +17,8 @@ class PingCommand extends Command {
     let firstTimecode = message.createdTimestamp;
     message.channel.send("Pong!").then((newMsg) => {
       let lastTimecode = newMsg.createdTimestamp;
-      let timeDiff = lastTimecode - firstTimecode
-      newMsg.edit("Pong! " + timeDiff + "ms")
+      let timeDiff = lastTimecode - firstTimecode;
+      newMsg.edit("Pong! " + timeDiff + "ms");
     })
   }
 }

@@ -3,9 +3,8 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const fs = require("fs")
 const path = require("path")
-const hook = require('./bot/lib/HookMan')
 
-const times = {}
+const times = require("./bot/lib/times")
 
 times.start = process.uptime()
 console.log("Reading token and light config")
@@ -14,54 +13,28 @@ var config = fs.readFileSync("config.json", "utf-8")
 config = JSON.parse(config);
 times.tokenLoaded = process.uptime()
 
-times.startModules = process.uptime()
-console.groupCollapsed("Loading modules")
 
-// module namespace
-const mod = {}
+const modman = require("./bot/lib/ModMan")
 
-// load list of files in modules folder
-var dirModules = fs.readdirSync("./bot/modules/")
-console.log(dirModules.length + " modules found")
-
-// loop through them and require() them
-for (let i in dirModules) {
-  console.groupCollapsed("Loading module " + (parseInt(i)+1) + " (" + dirModules[i] + ")")
-  
-  let thisName = dirModules[i].split('.js')[0];
-  let modPath = "./bot/modules/" + thisName;
-  let loadFrom = fs.readFileSync("./bot/modules/" + dirModules[i], 'utf-8')
-  console.log("Checking if module is disabled")
-  if (loadFrom.match(/^\/\/\s*(-[a-z]+)*\s*-disable(\s*(-[a-z]+)*)*/)) {
-    console.groupEnd()
-    console.warn(`Module ${thisName} is disabled`)
-    continue
-  }
-  let commandClass = require(modPath)
-  mod[thisName] = new commandClass(client)
-  //mod[thisName].init()
-  console.groupEnd()
+module.exports = {
+  client: client,
+  modman: modman,
+  config: config
 }
-console.groupEnd()
-console.log("Done loading modules")
-times.modulesLoaded = process.uptime()
-console.groupCollapsed("Initializing modules")
-for (let i in mod) {
-  console.log(`Initializing ${mod[i].name}`)
-  mod[i].init()
-}
-times.modulesInit = process.uptime()
-console.groupEnd()
-console.log("Modules initialized")
-//Events
 
-client.on('ready', () => {
-  hook.fireEvent('ready')
-  console.log("Client Ready")
+modman.start()
+
+
+client.on("ready", () => {
+  console.log("Logged In")
 })
 
-client.on('message', (message) => {
-  hook.fireEvent('message', message)
+client.on("error", (err) => {
+  if (client.uptime > 0) {
+    client.users.fetch("205036941874429953").then((usr) => {
+      usr.send("Error! ```" + err.message + "```")
+    })
+  }
 })
 
 
@@ -79,3 +52,4 @@ client.login(token).then(() => {
   console.log(`Start to login: ${(times.loggedIn - times.start)*1000}ms`)
   console.groupEnd()
 })
+

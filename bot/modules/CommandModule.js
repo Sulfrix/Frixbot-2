@@ -1,13 +1,15 @@
+// -requires:HookModule
 const Module = require("../lib/Module")
 const fs = require('fs')
 const path = require('path')
 const { Message } = require("discord.js")
-const hook = require("../lib/HookMan")
+const { modules } = require("../lib/ModMan")
+
 //const hook = require("../lib/HookMan")
 
 class CommandModule extends Module {
-  constructor(client) {
-    super("Command Module", "CommandModule", "Handles commands within the bot.", client)
+  constructor() {
+    super("Command Module", "CommandModule", "Handles commands within the bot.")
     this.classes = {}
     this.cmds = {}
     this.aliases = {}
@@ -36,18 +38,26 @@ class CommandModule extends Module {
       console.groupEnd();
     }
     console.groupEnd();
-    this.hookCreate("message", "messageRecieved")
+    if (require("../lib/ModMan").modules.HookModule) {
+      require("../lib/ModMan").modules.HookModule.create("message", "messageRecieved", this);
+    } else {
+      console.warn("Command Module: Hook Module not found. Module is inoperrable without it!");
+    }
   }
   /**
    * Invokes a message.
    * @param {Message} message 
    */
   messageRecieved(message) {
-    if (message.content.startsWith(require('../lib/Prefix'))) {
+    if (message.content.startsWith(require('../lib/Prefix').get(message.guild))) {
       var messageArgs = message.content.substr(1)
       messageArgs = messageArgs.split(" ")
       if (this.resolveAlias(messageArgs[0])) {
-        this.resolveAlias(messageArgs[0]).command.invoke(message, messageArgs)
+        if (this.resolveAlias(messageArgs[0]).command.hasPerms(message.member)) {
+          this.resolveAlias(messageArgs[0]).command.invoke(message, messageArgs)
+        } else {
+          message.channel.send(`Insufficient Permissions! \n**Required Permissions:**\`\`\`diff\n${this.resolveAlias(messageArgs[0]).command.perms.map((x) => { return (this.resolveAlias(messageArgs[0]).command.checkPerm(message.member, x) ? "+ " : "- ") + x}).join('\n')}\`\`\``)
+        }
       }
     }
   }
