@@ -11,7 +11,9 @@ class Command {
      */
     this.owner = owner
     /**
-     * @type {import("discord.js").PermissionString}
+     * An array of the required permissions needed to execute the command.
+     * 'BOT_OWNER' is also a permission.
+     * @type {import("discord.js").PermissionString[]}
      */
     this.perms = ["SEND_MESSAGES"]
     console.group("Assigning aliases")
