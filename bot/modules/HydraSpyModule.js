@@ -25,7 +25,7 @@ class HydraSpyModule extends Module {
 			if (i.name != "hydra-song-requests") {
 				return;
 			}
-      console.log(`%cHydra Spy: '${i.name}' from '${i.guild.name}' is a Hydra channel, caching the reaction message`, "color: white; background: #0dc1f1; border-radius: 2px; padding: 2px; font-family: sans-serif");
+      console.log(`Hydra Spy: '${i.name}' from '${i.guild.name}' is a Hydra channel, caching the reaction message`);
 			i.messages.fetch({ limit: 10 }).then((messages) => {
         let message = messages.first()
 				i.messages.cache.get(message.id);

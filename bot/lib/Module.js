@@ -16,7 +16,7 @@ class Module {
 		 * @type {Client}
 		 */
 		this.client = require.main.exports.client;
-		console.log("Module Init: " + this.id + " (" + this.name + ")");
+		console.log("Module Load: " + this.id + " (" + this.name + ")");
 	}
 	/**
 	 * Put initial code here. You can use other modules in here.

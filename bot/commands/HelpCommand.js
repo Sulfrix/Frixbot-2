@@ -5,7 +5,7 @@ class PingCommand extends Command {
 	constructor(owner) {
 		super("Help Command", ["help"], owner);
 		this.desc = "Shows help about a command. If no command is specified, shows list of commands.";
-		this.usage = "help [command]";
+		this.usage = "help [command]\n [command] - (optional) The command to get help on. Leave blank for a list of commands.";
 		this.obtainAvatar("205036941874429953");
 	}
 
@@ -52,6 +52,9 @@ class PingCommand extends Command {
 					helpEmbed.addField("Aliases", aliasNames.join(`\n`), true);
 				}
 			helpEmbed.addField("Required Permissions", `${resolvedCommand.perms.map((x) => `\`${x}\``).join(`\n`)}`, true);
+			if (!resolvedCommand.dmAllowed) {
+				helpEmbed.addField("Note", "This command cannot be used in DMs.", false)
+			}
 			message.channel.send(helpEmbed);
 		} else {
 			let commandNames = [];

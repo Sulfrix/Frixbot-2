@@ -1,11 +1,19 @@
 const { Message, User, GuildMember } = require("discord.js")
-const Alias = require("./Alias")
 const CommandModule = require("../modules/CommandModule")
+const Alias = require("./Alias")
 
 class Command {
+  /**
+	 * Base class for modules. Should be extended.
+	 * Do not put any code in constructor that utilizes other modules. You can get the module ready for use by other modules.
+	 * @param {String} name The name of the command.
+	 * @param {(String|Alias)[]} aliases An array of strings (or Alias objects) that will activate this command.
+	 * @param {CommandModule} owner the CommandModule object.
+	 */
   constructor(name, aliases, owner) {
     this.name = name
     this.aliases = []
+    this.dmAllowed = true;
     /**
      * @type {CommandModule}
      */
@@ -30,7 +38,7 @@ class Command {
   }
   /**
    * Called when command module is initialized and command is instanced.
-   * @override
+   * 
    */
   init() {
     throw new Error(`Command Error: ${this.constructor.name} has not overridden the init() function.`)
@@ -38,9 +46,9 @@ class Command {
   /**
    * Invokes the command with a message object.
    * @param {Message} message 
-   * @override
+   * @param {String[]} args
    */
-  invoke(message) {
+  invoke(message, args) {
     throw new Error(`Command Error: ${this.constructor.name} has not overridden the invoke() function.`)
   }
 

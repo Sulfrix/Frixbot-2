@@ -33,7 +33,6 @@ modman.start = function () {
 			let requireString = loadFrom.match(/(?<=^\/\/.+)-requires:([a-zA-Z]+,?)+/)[0];
 			requireString = requireString.replace(/^-requires:/, "");
 			let requiredModules = requireString.split(",");
-			console.log(requiredModules);
 			for (let i of requiredModules) {
 				if (!modman.dependencies[i]) {
 					let newDepend = {
@@ -45,7 +44,24 @@ modman.start = function () {
 				modman.dependencies[i].users.push(thisName);
 			}
 		}
-		let commandClass = require(modPath);
+		let commandClass = undefined;
+		try {
+			commandClass = require(modPath);
+		} catch (err) {
+			if (err) {
+				console.groupEnd()
+				let errString = `%c  Module Error  %c  Module ${thisName} could not be loaded.  `
+				console.log(errString, "color: white; background: red", "color: red; background: white")
+				let length = errString.replace('%c', '').length
+				let extraString = `%c  Caused by ${err.name}`
+				extraString = extraString + (' ').repeat(length-(extraString.replace('%c', '').length+2));
+				console.log(extraString, "color: red; background: white")
+				console.groupCollapsed(` Expand Details `)
+				console.error(err)
+				console.groupEnd()
+				continue
+			}
+		}
 		modman.modules[thisName] = new commandClass(require.main.client);
 		//mod[thisName].init()
 		console.groupEnd();

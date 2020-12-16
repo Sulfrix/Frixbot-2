@@ -4,6 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const { Message } = require("discord.js")
 const { modules } = require("../lib/ModMan")
+const Command = require("../lib/Command")
+const Alias = require("../lib/Alias")
 
 //const hook = require("../lib/HookMan")
 
@@ -52,9 +54,19 @@ class CommandModule extends Module {
     if (message.content.startsWith(require('../lib/Prefix').get(message.guild))) {
       var messageArgs = message.content.substr(1)
       messageArgs = messageArgs.split(" ")
-      if (this.resolveAlias(messageArgs[0])) {
-        if (this.resolveAlias(messageArgs[0]).command.hasPerms(message.member)) {
-          this.resolveAlias(messageArgs[0]).command.invoke(message, messageArgs)
+      /**
+       * @type {Alias} commandToRun
+       */
+      let commandToRun = this.resolveAlias(messageArgs[0]);
+      if (commandToRun) {
+        if (commandToRun.command.hasPerms(message.member)) {
+          if (!message.channel.guild) {
+            if (!commandToRun.command.dmAllowed) {
+              message.channel.send("This command is not usable in a DM channel.")
+              return false
+            }
+          }
+          commandToRun.command.invoke(message, messageArgs)
         } else {
           message.channel.send(`Insufficient Permissions! \n**Required Permissions:**\`\`\`diff\n${this.resolveAlias(messageArgs[0]).command.perms.map((x) => { return (this.resolveAlias(messageArgs[0]).command.checkPerm(message.member, x) ? "+ " : "- ") + x}).join('\n')}\`\`\``)
         }

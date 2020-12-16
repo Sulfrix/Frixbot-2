@@ -1,9 +1,6 @@
-const { Console, time } = require("console");
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const fs = require("fs")
-const path = require("path")
-
+const fs = require("fs") 
 const times = require("./bot/lib/times")
 
 times.start = process.uptime()
@@ -26,7 +23,7 @@ modman.start()
 
 
 client.on("ready", () => {
-  console.log("Logged In")
+  console.log("%c  Logged In  %c  " + client.user.tag + "  ", "color: white; background: #10af40", "color: white; background: #1040af;")
 })
 
 client.on("error", (err) => {
